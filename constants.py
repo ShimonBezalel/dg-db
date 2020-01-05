@@ -7,3 +7,6 @@ class API_GATEWAY(Enum):
 class CLASSIFICATION_METHOD:
     ACADEMIC = 'academic',
     CHEF     = 'chef'
+
+class INTENSITY_MODEL:
+    HIST    = 'hist' # counts the number of apearances of each descriptive word

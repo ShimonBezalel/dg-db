@@ -23,7 +23,8 @@ def parse_entity(data):
     """
     pass
 
-def gen_desc_dict(data):
+
+def gen_desc_histogram(data):
     """
     Generates a dictionary
     :param data:
@@ -31,7 +32,16 @@ def gen_desc_dict(data):
     """
     pass
 
-def calculate_auroma_profile(data, method, model ):
+def map_histogram(hist, method):
+    """
+    Takes a histogram of words as they appear ({"sweet": 40, "green": 30 ...}) and
+    maps them to the relevant auroma cluster
+    :param hist:
+    :return:
+    """
+    pass
+
+def calculate_auroma_profile(data, method, model):
     pass
 
 def main():
