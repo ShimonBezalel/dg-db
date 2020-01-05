@@ -1,4 +1,4 @@
-
+import requests
 
 API_URL = "https://cosylab.iiitd.edu.in/flavordb/entities_json"
 
@@ -11,6 +11,7 @@ def get_entity(flavordb_id):
     :param flavordb_id:
     :return:
     """
+    page = requests.get(url=API_URL, params={PARAM_ID: flavordb_id})
     pass
 
 def parse_entity(data):
