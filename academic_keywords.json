@@ -1,12 +1,62 @@
 {
-  "clusters" : [
+  "clusters": [
     {
-      "title" :     null,
-      "pseudonym" : null,
-      "level" :     null,
-      "index":      null,
-      "keywords" : [
-        "Floral",
+      "title": "Citrus",
+      "pseudonym": null,
+      "level": null,
+      "index": null,
+      "keywords": [
+        "orange",
+        "citrus",
+        "pungent",
+        "herbaceous",
+        "herb",
+        "herbal",
+        "lemon",
+        "fragant",
+        "light",
+        "cool",
+        "cooling",
+        "aromatic",
+        "herbal",
+        "green",
+        "sharp",
+        "pungent",
+        "acid"
+      ]
+    },
+    {
+      "title": "Decayed",
+      "pseudonym": null,
+      "level": null,
+      "index": null,
+      "keywords": [
+        "sickening",
+        "earthy",
+        "pungent",
+        "sour",
+        "rancid",
+        "fecal",
+        "putrid",
+        "foul",
+        "decayed",
+        "sweaty",
+        "vinegar",
+        "sharp",
+        "acid",
+        "manure",
+        "musty",
+        "moldy",
+        "heavy",
+        "cadaverous"
+      ]
+    },
+    {
+      "title": "Floral",
+      "pseudonym": null,
+      "level": null,
+      "index": null,
+      "keywords": [
         "fragant",
         "floral",
         "rose",
@@ -22,6 +72,174 @@
         "cologne",
         "geranium",
         "petal"
+      ]
+    },
+    {
+      "title": "Fruity",
+      "pseudonym": null,
+      "level": null,
+      "index": null,
+      "keywords": [
+        "pear",
+        "raspberry",
+        "fruit",
+        "tropical",
+        "raspberry",
+        "apple",
+        "banana",
+        "blueberry",
+        "pineapple",
+        "fruity",
+        "sweet",
+        "fragant",
+        "aromatic",
+        "cherry",
+        "berry",
+        "perfumery"
+      ]
+    },
+    {
+      "title": "Medicinal",
+      "pseudonym": null,
+      "level": null,
+      "index": null,
+      "keywords": [
+        "pungent",
+        "solvent",
+        "ether",
+        "gasoline",
+        "etherish",
+        "alcohol",
+        "anaesthetic",
+        "medicinal",
+        "disinfectant",
+        "carbolic",
+        "chemical",
+        "sharp",
+        "acid",
+        "paint",
+        "alcoholic",
+        "turpentine"
+      ]
+    },
+    {
+      "title": "Mint",
+      "pseudonym": null,
+      "level": null,
+      "index": null,
+      "keywords": [
+        "spicy",
+        "fresh",
+        "mint",
+        "minty",
+        "cool",
+        "cooling",
+        "aromatic",
+        "anise",
+        "licorice",
+        "eucaliptus",
+        "camphor",
+        "peppermint",
+        "mentholic"
+      ]
+    },
+    {
+      "title": "Smoky",
+      "pseudonym": null,
+      "level": null,
+      "index": null,
+      "keywords": [
+        "fatty",
+        "earthy",
+        "woody",
+        "nutty",
+        "fat",
+        "oily",
+        "nut",
+        "smoky",
+        "burnt",
+        "popcorn",
+        "peanut",
+        "heavy",
+        "warm",
+        "musty",
+        "earthy",
+        "moldy",
+        "woody",
+        "resinous"
+      ]
+    },
+    {
+      "title": "Sulfidic",
+      "pseudonym": null,
+      "level": null,
+      "index": null,
+      "keywords": [
+        "sickening",
+        "Garlic",
+        "Onion",
+        "pungent",
+        "sulfur",
+        "garlic",
+        "sulfury",
+        "sulfurous",
+        "sulfidic",
+        "sharp",
+        "acid",
+        "gas",
+        "putrid",
+        "foul ",
+        "decayed",
+        "sewer"
+      ]
+    },
+    {
+      "title": "Sweet",
+      "pseudonym": null,
+      "level": null,
+      "index": null,
+      "keywords": [
+        "sweet",
+        "almond",
+        "cocoa",
+        "vanilla",
+        "chocolate",
+        "malty",
+        "caramel",
+        "light",
+        "warm"
+      ]
+    },
+    {
+      "title": "Uncategorised",
+      "pseudonym": null,
+      "level": null,
+      "index": null,
+      "keywords": ["acacia", "alcohol", "aldehydic", "almond", "amber", "animal", "apricot", "ball", "balsam", "balsamic", "bitter", "bug", "burnt", "cabbage", "celery", "cheese", "cheesy", "chemical", "clean", "cocoa", "coffee", "coriander", "creamy", "crushed", "cucumber", "dry", "dusty", "fecal", "fusel", "gassy", "hawthorn", "hawthorne", "hay", "hazelnut", "honey", "incense", "iris", "jam", "jasmine", "leaf", "meat", "meaty", "mimosa", "moth", "mothball", "mushroom", "musk", "must", "musty", "naphthelene", "natural", "orris", "peel", "pineapple", "plastic", "potato", "powdery", "pyridine", "ripe", "roast", "roasted", "rum", "seaweed", "soap", "soapy", "sweat", "tallow", "tomato", "vegetable", "watery", "wax", "waxy", "wet", "whiskey", "wine", "wine_like"],
+
+    },
+    {
+      "title": "Woody",
+      "pseudonym": null,
+      "level": null,
+      "index": null,
+      "keywords": [
+        "woody",
+        "resinous",
+        "wood",
+        "cedarwood",
+        "green",
+        "earthy",
+        "spicy",
+        "light",
+        "heavy",
+        "herbaceous",
+        "herb",
+        "herbal",
+        "fragant",
+        "aromatic",
+        "burnt",
+        "smoky"
       ]
     }
   ]
