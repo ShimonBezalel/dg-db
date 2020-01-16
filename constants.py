@@ -6,7 +6,8 @@ class API_GATEWAY(Enum):
 
 class CLASSIFICATION_METHOD:
     ACADEMIC = 'academic',
-    CHEF     = 'chef'
+    CHEF_LEVEL_1     = 'chef_level_1'
+    CHEF_LEVEL_2     = 'chef_level_2'
     RELATIVE_INTENSITY = 'relative_intensity'
 
 class INTENSITY_MODEL:

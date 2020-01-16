@@ -1,4 +1,17 @@
 import json
+from pprint import pprint
+
+
+def read_json(file_name):
+    with open(file_name, 'r') as json_file:
+        return json.load(json_file)
+
+
+def write_json(file_name, data):
+    with open(file_name, 'w') as f:
+        json.dump(data, f)
+    print("file: " + file_name + " was created")
+
 
 
 def modified_keywords_academic():
@@ -12,8 +25,7 @@ def modified_keywords_academic():
             cluster['keywords'] = all_keys
 
     with open('academic_keywords.json', 'w') as f:
-        json.dump(academic,f)
-
+        json.dump(academic, f)
 
 
 def process_keywords(str):
@@ -25,19 +37,68 @@ def process_keywords(str):
         keys_arr += [keywords[i]]
     return keys_arr
 
+
+def read_chef():
+    chef_csv = open("Copy of DG-DB-noam - Sheet8 - Copy of DG-DB-noam - Sheet8 (1).csv", "r")
+    chef_table = [l_ing for l_ing in [line.split(",") for line in chef_csv]]
+    # print(chef_table)
+
+    chef_table_dict = {}
+    chef_table_dict['clusters'] = []
+    opposite_chef_table_level_1 = {}
+    opposite_chef_table_level_2 = {}
+    level_2_to_level_1 = {}
+
+    cluster = {}
+    j = 0
+    for line in chef_table:
+        keywords = []
+        if line is not None:
+            title = ''
+            subtitle = ''
+            for i in range(0, len(line)):
+                col = line[i]
+                if i == 0:
+                    title = col
+                    if 'title' not in cluster:  # init
+                        cluster = {'id': j, 'title': title, 'level': 1, 'sub_cluster': []}
+                        chef_table_dict['clusters'].append(cluster)
+                        j += 1
+                    else:
+                        if cluster['title'] != title:
+                            cluster = {'id': j, 'title': title, 'level': 1, 'sub_cluster': []}
+                            chef_table_dict['clusters'].append(cluster)
+                            j += 1
+                elif i == 1:
+                    subtitle = col
+                    level_2_to_level_1[subtitle] = title
+                    # print(title + "->" + subtitle, end=': ')
+                elif col == '\n' or col == '':
+                    break
+                else:
+                    # print(line[i], end=' ')
+                    keywords.append(col)
+                    opposite_chef_table_level_1[col] = title
+                    opposite_chef_table_level_2[col] = subtitle
+            sub_cluster = {"title": subtitle, "level": 2, "keywords": keywords}
+            cluster['sub_cluster'].append(sub_cluster)
+
+    #  Do once -
+    # write_json("opposite_chef_table_level_1.json", opposite_chef_table_level_1)
+    # write_json("opposite_chef_table_level_2.json", opposite_chef_table_level_2)
+    # write_json("level_2_to_level_1.json", level_2_to_level_1)
+
+    write_json("chef_table.json", chef_table_dict)
+
 def read_academic():
     with open('academic_keywords.json', 'r') as f:
         academic = json.load(f)
 
     for cluster in academic['clusters']:
         if "berry" in cluster['keywords']:
-            print (cluster['title'] + ', num of keys ' + str(len(cluster['keywords'])))
+            print(cluster['title'] + ', num of keys ' + str(len(cluster['keywords'])))
 
 # modified_keywords_academic()
 # process_keywords()
 
-
-
-
-
-
+# read_chef()
