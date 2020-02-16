@@ -1,0 +1,28 @@
+{
+    "clusters" : [
+      {
+        "title" :     "maillard",
+        "pseudonym" : null,
+        "level" :     0,
+        "index":      null,
+        "keywords" : [
+          "toasted",
+          "roasted",
+          "nutty",
+          "meaty",
+          "chocolate",
+          "caramel"
+        ]
+      }, {
+        "title" :     "toasted",
+        "pseudonym" : null,
+        "level" :     1,
+        "index":      null,
+        "keywords" : [
+          "toasted",
+          "burnt"
+        ]
+      }
+    ]
+
+}

@@ -15,7 +15,7 @@ def write_json(file_name, data):
 
 
 def modified_keywords_academic():
-    with open('academic_keywords.json', 'r') as f:
+    with open('assets/original_data/statistical_keywords.json', 'r') as f:
         academic = json.load(f)
 
     for cluster in academic['clusters']:
@@ -24,7 +24,7 @@ def modified_keywords_academic():
             # print(all_keys)
             cluster['keywords'] = all_keys
 
-    with open('academic_keywords.json', 'w') as f:
+    with open('assets/original_data/statistical_keywords.json', 'w') as f:
         json.dump(academic, f)
 
 
@@ -39,7 +39,7 @@ def process_keywords(str):
 
 
 def read_chef():
-    chef_csv = open("Copy of DG-DB-noam - Sheet8 - Copy of DG-DB-noam - Sheet8 (1).csv", "r")
+    chef_csv = open("assets/original_data/Copy of DG-DB-noam - Sheet8 - Copy of DG-DB-noam - Sheet8 (1).csv", "r")
     chef_table = [l_ing for l_ing in [line.split(",") for line in chef_csv]]
     # print(chef_table)
 
@@ -84,14 +84,14 @@ def read_chef():
             cluster['sub_cluster'].append(sub_cluster)
 
     #  Do once -
-    # write_json("opposite_chef_table_level_1.json", opposite_chef_table_level_1)
-    # write_json("opposite_chef_table_level_2.json", opposite_chef_table_level_2)
+    # write_json("opposite_culinary_table_level_1.json", opposite_chef_table_level_1)
+    # write_json("opposite_culinary_table_level_2.json", opposite_chef_table_level_2)
     # write_json("level_2_to_level_1.json", level_2_to_level_1)
 
-    write_json("chef_table.json", chef_table_dict)
+    write_json("assets/original_data/chef_table.json", chef_table_dict)
 
 def read_academic():
-    with open('academic_keywords.json', 'r') as f:
+    with open('assets/original_data/statistical_keywords.json', 'r') as f:
         academic = json.load(f)
 
     for cluster in academic['clusters']:

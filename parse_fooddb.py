@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 
 import sys
 import json
+import csv
 
 """
 Q:
@@ -19,7 +20,7 @@ def eprint(*args, **kwargs):
 
 
 import requests
-from constants import API_GATEWAY, CLASSIFICATION_METHOD
+from constants import API_GATEWAY, CLASSIFICATION_METHOD, OPERATING_TYPES
 
 PARAM_ID = "id"
 ID_TOMATO = 364
@@ -77,11 +78,10 @@ def read_json(file_name):
     with open(file_name, 'r') as json_file:
         return json.load(json_file)
 
+
 def write_json(file_name, data):
     with open(file_name, 'w') as f:
         json.dump(data, f)
-
-
 
 
 def relative_intensity(num_of_molecules, cluster_dict):
@@ -90,7 +90,7 @@ def relative_intensity(num_of_molecules, cluster_dict):
     return cluster_dict
 
 
-def chef_map_histogram(hist):
+def culinary_map_histogram(hist):
     pass
 
 
@@ -99,17 +99,17 @@ def map_histogram(data, method, unknown_flavor):
     Takes a histogram of words as they appear ({"sweet": 40, "green": 30 ...}) and
     maps them to the relevant aroma cluster
     :param data: dict() - cluster counting depend the method
-    :param method: ACADEMIC | CHEF_LEVEL_1 | CHEF_LEVEL_2
+    :param method: STATISTICAL | CULINARY_LEVEL_1 | CULINARY_LEVEL_2
     :param unknown_flavor: pointer to list of unknown flavor
     :return: counting fo cluster dict (depend the method)
     """
     cluster_count_dict = {}
-    if method == CLASSIFICATION_METHOD.ACADEMIC:
-        cluster_keywords = read_json('academic_simple.json')
-    elif method == CLASSIFICATION_METHOD.CHEF_LEVEL_1:
-        cluster_keywords = read_json('opposite_chef_table_level_1.json')
-    elif method == CLASSIFICATION_METHOD.CHEF_LEVEL_2:
-        cluster_keywords = read_json('opposite_chef_table_level_2.json')
+    if method == CLASSIFICATION_METHOD.STATISTICAL:
+        cluster_keywords = read_json('assets/statistical_simple.json')
+    elif method == CLASSIFICATION_METHOD.CULINARY_LEVEL_1:
+        cluster_keywords = read_json('assets/opposite_culinary_table_level_1.json')
+    elif method == CLASSIFICATION_METHOD.CULINARY_LEVEL_2:
+        cluster_keywords = read_json('assets/opposite_culinary_table_level_2.json')
 
     # take each flavor
     flavor_profiles_counts = data
@@ -155,22 +155,18 @@ def calculate_limits(molecule_cluster_counts_dict, min_max_dict):
             min_max_dict[cluster_name] = {'max': count, 'min': count}
 
 
-def download_and_analyze_cluster_counts_flavor_db(n):
+def download_flavor_db(n):
     """
     this function calculate :
-        molecules counts per ingredients for each method : academic ,chef1,chef2
+        molecules counts per ingredients for each method : statistical ,culinary1,culinary2
         min and max values per cluster for each medthod
         write json files with calculation data
     :param n: int  - running until id = n in flavorDb server
     :return: no return, write thus json files
     """
     ingredients = {'ingredients': []}
-    academic_limits = {}
-    chef1_limits = {}
-    chef2_limits = {}
-    no_response = []
 
-    unknown_flavor = set()
+    no_response = []
     for i in range(0, n):
         json_data = get_entity(i)
         if json_data is None:
@@ -178,81 +174,128 @@ def download_and_analyze_cluster_counts_flavor_db(n):
             no_response.append(i)
             continue
         relevant_data = parse_entity(json_data)
-        flavor_profiles_counts = gen_desc_histogram(relevant_data)
-        # print(flavor_profiles_counts)
-        relevant_data['flavor_profiles_counts'] = flavor_profiles_counts
-        relevant_data['cluster_count_academic'] = map_histogram(flavor_profiles_counts, CLASSIFICATION_METHOD.ACADEMIC,
-                                                                unknown_flavor)
-        relevant_data['cluster_count_chef_1'] = map_histogram(flavor_profiles_counts,
-                                                              CLASSIFICATION_METHOD.CHEF_LEVEL_1, unknown_flavor)
-        relevant_data['cluster_count_chef_2'] = map_histogram(flavor_profiles_counts,
-                                                              CLASSIFICATION_METHOD.CHEF_LEVEL_2, unknown_flavor)
-        del relevant_data['molecules']
-
-        calculate_limits(relevant_data['cluster_count_academic'], academic_limits)
-        calculate_limits(relevant_data['cluster_count_chef_1'], chef1_limits)
-        calculate_limits(relevant_data['cluster_count_chef_2'], chef2_limits)
-
-        # aromas_profile_dict = calculate_auroma_profile(relevant_data, CLASSIFICATION_METHOD.RELATIVE_INTENSITY)
-
-        print("----  entity: " + relevant_data['entity_alias_readable'] + " |  id: " + str(relevant_data['entity_id'])
+        print("---- downloads entity: " + relevant_data['entity_alias_readable'] + " |  id: " + str(relevant_data['entity_id'])
               + "   ------")
         ingredients['ingredients'].append(relevant_data)
-    write_json('ingredients_up_to_' + str(n) + '.json', ingredients)
-    write_json('academic_limits.json', academic_limits)
-    write_json('chef1_limits.json', chef1_limits)
-    write_json('chef2_limits.json', chef2_limits)
-    print("*************")
-    with open('unknown_flavor.txt', 'w') as uf_file:
-        uf_file.write("\n".join(str(flavor) for flavor in unknown_flavor))
+    write_json('results/downloads_up_to_' + str(n) + '.json', ingredients)
+
     if len(no_response) > 0:
-        with open('no_response.txt', 'w') as no_r_file:
+        with open('results/no_response.txt', 'w') as no_r_file:
             no_r_file.write("\n".join(str(i) for i in no_response))
 
 
 def calculate_aroma_profile_flavor_db(n):
     """
-    this function read the json files with ingredients data, max and min value from academic and chef json file
+    this function read the json files with ingredients data, max and min value from statistical and culinary json file
     and calculate the aroma profile by this formula: (molecules count per cluster) / (max cluster value)
     :param n: int - running until id = n in flavorDb server
     :return: no return ,write to 'aroma_up_to_n.json' dictionary with all ingredients calculation data
     """
-    ingredients = read_json('ingredients_up_to_' + str(n) + '.json')
-    academic_limits = read_json('academic_limits.json')
-    chef1_limits = read_json('chef1_limits.json')
-    chef2_limits = read_json('chef2_limits.json')
-    academic_aroma = {key: 0 for key in academic_limits.keys()}
-    chef1_aroma = {key: 0 for key in chef1_limits.keys()}
-    chef2_aroma = {key: 0 for key in chef2_limits.keys()}
+    ingredients = read_json('results/ingredients_up_to_' + str(n) + '.json')
+    statistical_limits = read_json('assets/statistical_limits.json')
+    culinary1_limits = read_json('assets/culinary1_limits.json')
+    culinary2_limits = read_json('assets/culinary2_limits.json')
+    statistical_aroma = {key: 0 for key in statistical_limits.keys()}
+    culinary1_aroma = {key: 0 for key in culinary1_limits.keys()}
+    culinary2_aroma = {key: 0 for key in culinary2_limits.keys()}
 
+    print("calculate aroma")
+    print("**************")
     for ingredient in ingredients['ingredients']:
-        print("----  entity: " + ingredient['entity_alias_readable'] + " |  id: " + str(ingredient['entity_id'])
+        print("---- aroma  entity: " + ingredient['entity_alias_readable'] + " |  id: " + str(ingredient['entity_id'])
               + "   ------")
 
-        for cluster, count in ingredient['cluster_count_academic'].items():
-            academic_aroma[cluster] = count / academic_limits[cluster]['max']
-        ingredient['academic_aroma'] = academic_aroma
+        for cluster, count in ingredient['cluster_count_statistical'].items():
+            statistical_aroma[cluster] = round(count / statistical_limits[cluster]['max'], 2)
+        ingredient['statistical_aroma'] = statistical_aroma.copy()
 
-        for cluster, count in ingredient['cluster_count_chef_1'].items():
-            chef1_aroma[cluster] = count / chef1_limits[cluster]['max']
-        ingredient['chef_1_aroma'] = chef1_aroma
+        for cluster, count in ingredient['cluster_count_culinary_1'].items():
+            culinary1_aroma[cluster] = round(count / culinary1_limits[cluster]['max'], 2)
+        ingredient['culinary_1_aroma'] = culinary1_aroma.copy()
 
-        for cluster, count in ingredient['cluster_count_chef_2'].items():
-            chef2_aroma[cluster] = count / chef2_limits[cluster]['max']
-        ingredient['chef_2_aroma'] = chef2_aroma
+        for cluster, count in ingredient['cluster_count_culinary_2'].items():
+            culinary2_aroma[cluster] = round(count / culinary2_limits[cluster]['max'], 2)
+        ingredient['culinary_2_aroma'] = culinary2_aroma.copy()
 
-    write_json('aromas_up_to_' + str(n) + '.json', ingredients)
+    write_json('results/aromas_up_to_' + str(n) + '.json', ingredients)
+
+
+
+
+
+def cluster_counts(n, limit_calculation = False):
+    print("*************")
+    ingredients = read_json('results/downloads_up_to_' + str(n) + '.json')
+    statistical_limits = {}
+    culinary1_limits = {}
+    culinary2_limits = {}
+    unknown_flavor = set()
+    for ingredient in ingredients['ingredients']:
+        print("---- cluster count entity: " + ingredient['entity_alias_readable'] + " |  id: " + str(
+            ingredient['entity_id'])
+              + "   ------")
+
+        flavor_profiles_counts = gen_desc_histogram(ingredient)
+        # print(flavor_profiles_counts)
+        ingredient['flavor_profiles_counts'] = flavor_profiles_counts
+        ingredient['cluster_count_statistical'] = map_histogram(flavor_profiles_counts,
+                                                                   CLASSIFICATION_METHOD.STATISTICAL,
+                                                                   unknown_flavor)
+        ingredient['cluster_count_culinary_1'] = map_histogram(flavor_profiles_counts,
+                                                                  CLASSIFICATION_METHOD.CULINARY_LEVEL_1, unknown_flavor)
+        ingredient['cluster_count_culinary_2'] = map_histogram(flavor_profiles_counts,
+                                                                  CLASSIFICATION_METHOD.CULINARY_LEVEL_2, unknown_flavor)
+        del ingredient['molecules']
+        if limit_calculation:
+            calculate_limits(ingredient['cluster_count_statistical'], statistical_limits)
+            calculate_limits(ingredient['cluster_count_culinary_1'], culinary1_limits)
+            calculate_limits(ingredient['cluster_count_culinary_2'], culinary2_limits)
+
+    # write results and assets:
+    write_json('results/ingredients_up_to_' + str(n) + '.json', ingredients)
+    with open('results/unknown_flavor.txt', 'w') as uf_file:
+        uf_file.write("\n".join(str(flavor) for flavor in unknown_flavor))
+
+    if limit_calculation:
+        write_json('assets/statistical_limits.json', statistical_limits)
+        write_json('assets/culinary1_limits.json', culinary1_limits)
+        write_json('assets/culinary2_limits.json', culinary2_limits)
+
+
+def create_matrix(n):
+    ingredients = read_json('results/aromas_up_to_' + str(n) + '.json')
+    statistical_aroma_matrix = []
+    entity_id = -1
+    for ingredient in ingredients['ingredients']:
+        if ingredient['entity_id'] - 1 == entity_id:
+            statistical_aroma_matrix.append([val for val in ingredient['statistical_aroma'].values()])
+            entity_id += 1
+        else:
+            cluster_num = len(ingredient['statistical_aroma'])
+            for i in range(abs(ingredient['entity_id'] - entity_id) - 1):
+                statistical_aroma_matrix.append([0] * cluster_num)
+            statistical_aroma_matrix.append([val for val in ingredient['statistical_aroma'].values()])
+            entity_id = ingredient['entity_id'] = -1
+
+    with open('results/aroma_intensity_matrix_up_to_' + str(n) +'.csv', 'w') as outfile:
+        csvWriter = csv.writer(outfile, delimiter='\t')
+        csvWriter.writerows(statistical_aroma_matrix)
+
+    pprint(statistical_aroma_matrix)
 
 
 def main():
     start_time = time.time()
 
-    n = 1000
-    print("Download and analyze ...")
-    download_and_analyze_cluster_counts_flavor_db(n)
+    n = 1050
+    # print("Download ...")
+    # download_flavor_db(n)
+    print("cluster counts ...")
+    # cluster_counts(n, OPERATING_TYPES.KEEP_CALCULATION_LIMITS)
     print("Start aroma calculation ...")
     calculate_aroma_profile_flavor_db(n)
-
+    print("create matrix ...")
+    create_matrix(n)
     print("*************** %s minuets ***********" % str((time.time() - start_time) / 60))
 
 

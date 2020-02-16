@@ -1,0 +1,124 @@
+maple
+animal
+rum
+whiskey
+mandarin
+fresh
+cooked potato
+hawthorne
+beany
+aldehydic
+cheesy
+sharp
+indole
+grape
+bland
+roast beef
+butter
+sweet corn
+mothball
+mentholic
+cooling
+must
+peppermint
+phenol
+rotten
+honey
+naphthelene
+cabbage
+anisic
+rubber
+wine
+hyacinth
+coffee
+amine
+putrid
+potato
+gravy
+warm
+ethereal
+onion
+fatty
+spice
+medicine
+burnt sugar
+alcohol
+ether
+wine_like
+peely
+grass
+roasted nut
+raw
+odorless
+fecal
+clover
+sweat
+phenolic
+peach
+fat
+horseradish
+musty
+radish
+metal
+very strong
+barley
+fungal
+civet
+tobacco
+balsam
+bacon
+oily
+powdery
+lime
+grapefruit
+cheese
+bread
+mimosa
+clean clothes
+soapy
+orange peel
+cream
+narcissus
+bitter
+weedy
+malt
+green bean
+chicken
+metallic
+balsamic
+peanut butter
+malty
+solvent
+natural
+plastic
+moth ball
+fishy
+dairy
+mild
+hazelnut
+sickening
+soap
+waxy
+grassy
+orris
+medical
+walnut
+tomato
+leather
+rancid
+beef
+creamy
+very mild
+popcorn
+roasted
+roasted nuts
+roast
+faint
+wild
+egg
+smoke
+corn
+meat
+decomposing cabbage
+camphoraceous
+roasted meat
