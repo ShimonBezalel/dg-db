@@ -13,7 +13,6 @@ def write_json(file_name, data):
     print("file: " + file_name + " was created")
 
 
-
 def modified_keywords_academic():
     with open('assets/original_data/statistical_keywords.json', 'r') as f:
         academic = json.load(f)
@@ -90,6 +89,7 @@ def read_chef():
 
     write_json("assets/original_data/chef_table.json", chef_table_dict)
 
+
 def read_academic():
     with open('assets/original_data/statistical_keywords.json', 'r') as f:
         academic = json.load(f)
@@ -98,7 +98,19 @@ def read_academic():
         if "berry" in cluster['keywords']:
             print(cluster['title'] + ', num of keys ' + str(len(cluster['keywords'])))
 
+
+def id_to_mol():
+    downloads = read_json('results/downloads_up_to_1050.json')
+    ingredient_to_mol = {}
+    for ing in downloads['ingredients']:
+        mol_ing = list({item['pubchem_id']  for item in ing["molecules"]})
+        ingredient_to_mol[ing['entity_id']] = mol_ing
+        # pprint(ingredient_to_mol)
+    # pprint(ingredient_to_mol)
+    write_json('assets/ingredient_to_mol.json', ingredient_to_mol)
+
+
 # modified_keywords_academic()
 # process_keywords()
-
+# id_to_mol()
 # read_chef()

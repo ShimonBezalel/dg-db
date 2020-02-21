@@ -3,40 +3,13 @@ from __future__ import print_function
 import time
 from pprint import pprint
 
-import matplotlib.pyplot as plt
+import pandas as pd
 
-import sys
-import json
-import csv
+import constants
+from constants import OPERATING_TYPES as ot
+from common_function import read_json, write_json, get_entity, calculate_ratio, relative_intensity, print_status
 
-"""
-Q:
-1. 
-"""
-
-
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
-
-
-import requests
-from constants import API_GATEWAY, CLASSIFICATION_METHOD, OPERATING_TYPES
-
-PARAM_ID = "id"
 ID_TOMATO = 364
-
-
-def get_entity(flavordb_id):
-    """
-    Retrieves the data for a given entity by ID. The data is returned in json format.
-    :param flavordb_id:
-    :return:
-    """
-    page = requests.get(url=API_GATEWAY.FLAVOR_DB.value, params={PARAM_ID: flavordb_id})
-    if page.status_code == 404:
-        return None
-    else:
-        return page.json()
 
 
 def parse_entity(data):
@@ -74,26 +47,6 @@ def gen_desc_histogram(data):
     return keywords_hist
 
 
-def read_json(file_name):
-    with open(file_name, 'r') as json_file:
-        return json.load(json_file)
-
-
-def write_json(file_name, data):
-    with open(file_name, 'w') as f:
-        json.dump(data, f)
-
-
-def relative_intensity(num_of_molecules, cluster_dict):
-    for cluster in cluster_dict:
-        cluster_dict[cluster] = round(cluster_dict[cluster] / num_of_molecules, 2)
-    return cluster_dict
-
-
-def culinary_map_histogram(hist):
-    pass
-
-
 def map_histogram(data, method, unknown_flavor):
     """
     Takes a histogram of words as they appear ({"sweet": 40, "green": 30 ...}) and
@@ -104,11 +57,12 @@ def map_histogram(data, method, unknown_flavor):
     :return: counting fo cluster dict (depend the method)
     """
     cluster_count_dict = {}
-    if method == CLASSIFICATION_METHOD.STATISTICAL:
+    cluster_keywords = None
+    if method == constants.CLASSIFICATION_METHOD.STATISTICAL:
         cluster_keywords = read_json('assets/statistical_simple.json')
-    elif method == CLASSIFICATION_METHOD.CULINARY_LEVEL_1:
+    elif method == constants.CLASSIFICATION_METHOD.CULINARY_LEVEL_1:
         cluster_keywords = read_json('assets/opposite_culinary_table_level_1.json')
-    elif method == CLASSIFICATION_METHOD.CULINARY_LEVEL_2:
+    elif method == constants.CLASSIFICATION_METHOD.CULINARY_LEVEL_2:
         cluster_keywords = read_json('assets/opposite_culinary_table_level_2.json')
 
     # take each flavor
@@ -131,7 +85,7 @@ def calculate_aroma_profile(data, method, hist):
     for title, total_count in hist.items():
         if title not in ["Uncategorised"]:
             filtered_hist[title] = total_count
-    if method == CLASSIFICATION_METHOD.RELATIVE_INTENSITY:
+    if method == constants.CLASSIFICATION_METHOD.RELATIVE_INTENSITY:
         return relative_intensity(sum(filtered_hist.values()), filtered_hist)
     else:
         pass
@@ -174,7 +128,8 @@ def download_flavor_db(n):
             no_response.append(i)
             continue
         relevant_data = parse_entity(json_data)
-        print("---- downloads entity: " + relevant_data['entity_alias_readable'] + " |  id: " + str(relevant_data['entity_id'])
+        print("---- downloads entity: " + relevant_data['entity_alias_readable'] + " |  id: " + str(
+            relevant_data['entity_id'])
               + "   ------")
         ingredients['ingredients'].append(relevant_data)
     write_json('results/downloads_up_to_' + str(n) + '.json', ingredients)
@@ -220,10 +175,7 @@ def calculate_aroma_profile_flavor_db(n):
     write_json('results/aromas_up_to_' + str(n) + '.json', ingredients)
 
 
-
-
-
-def cluster_counts(n, limit_calculation = False):
+def cluster_counts(n, limit_calculation=False):
     print("*************")
     ingredients = read_json('results/downloads_up_to_' + str(n) + '.json')
     statistical_limits = {}
@@ -239,12 +191,14 @@ def cluster_counts(n, limit_calculation = False):
         # print(flavor_profiles_counts)
         ingredient['flavor_profiles_counts'] = flavor_profiles_counts
         ingredient['cluster_count_statistical'] = map_histogram(flavor_profiles_counts,
-                                                                   CLASSIFICATION_METHOD.STATISTICAL,
-                                                                   unknown_flavor)
+                                                                constants.CLASSIFICATION_METHOD.STATISTICAL,
+                                                                unknown_flavor)
         ingredient['cluster_count_culinary_1'] = map_histogram(flavor_profiles_counts,
-                                                                  CLASSIFICATION_METHOD.CULINARY_LEVEL_1, unknown_flavor)
+                                                               constants.CLASSIFICATION_METHOD.CULINARY_LEVEL_1,
+                                                               unknown_flavor)
         ingredient['cluster_count_culinary_2'] = map_histogram(flavor_profiles_counts,
-                                                                  CLASSIFICATION_METHOD.CULINARY_LEVEL_2, unknown_flavor)
+                                                               constants.CLASSIFICATION_METHOD.CULINARY_LEVEL_2,
+                                                               unknown_flavor)
         del ingredient['molecules']
         if limit_calculation:
             calculate_limits(ingredient['cluster_count_statistical'], statistical_limits)
@@ -262,40 +216,76 @@ def cluster_counts(n, limit_calculation = False):
         write_json('assets/culinary2_limits.json', culinary2_limits)
 
 
-def create_matrix(n):
-    ingredients = read_json('results/aromas_up_to_' + str(n) + '.json')
-    statistical_aroma_matrix = []
-    entity_id = -1
+def create_cluster_matrix(method):
+    ingredients = read_json('results/aromas_up_to_1050.json')
+
+    data = {}
     for ingredient in ingredients['ingredients']:
-        if ingredient['entity_id'] - 1 == entity_id:
-            statistical_aroma_matrix.append([val for val in ingredient['statistical_aroma'].values()])
-            entity_id += 1
-        else:
-            cluster_num = len(ingredient['statistical_aroma'])
-            for i in range(abs(ingredient['entity_id'] - entity_id) - 1):
-                statistical_aroma_matrix.append([0] * cluster_num)
-            statistical_aroma_matrix.append([val for val in ingredient['statistical_aroma'].values()])
-            entity_id = ingredient['entity_id'] = -1
+        print_status(ingredient, "cluster matrix: " + method)
 
-    with open('results/aroma_intensity_matrix_up_to_' + str(n) +'.csv', 'w') as outfile:
-        csvWriter = csv.writer(outfile, delimiter='\t')
-        csvWriter.writerows(statistical_aroma_matrix)
+        cluster_aroma_vals = list(ingredient[method].values())
+        idx = ingredient['entity_id']
+        data[idx] = cluster_aroma_vals
 
-    pprint(statistical_aroma_matrix)
+    random_ingredient = next(iter(ingredients['ingredients']))
+    keys = random_ingredient[method].keys()
+    df = pd.DataFrame(data, index=list(keys))
+    df_result = df.transpose()
+    df_result.to_csv('results/csv_files/' + method + '_matrix.csv', sep='\t', encoding='utf-8')
+
+
+def generate_correlation_matrix():
+    id_to_molecules = read_json('assets/ingredient_to_mol.json')
+    data = []
+    for ing_id_base in id_to_molecules:
+        if int(ing_id_base) % 50 == 0:
+            print("ing_id_base: " + ing_id_base)
+        mol_ing_base = id_to_molecules[ing_id_base]
+        line = {}
+        for ing_id_2 in id_to_molecules:
+            mol_ing = id_to_molecules[ing_id_2]
+            ratio = round(calculate_ratio(mol_ing_base, mol_ing), 3)
+            line[int(ing_id_2)] = ratio
+        data.append(line.copy())
+
+    df = pd.DataFrame(data, index=list(id_to_molecules.keys()))
+    df_result = df.transpose()
+    pprint(df_result)
+    df_result.to_csv('results/pair_matrix.csv', sep='\t', encoding='utf-8')
 
 
 def main():
     start_time = time.time()
 
-    n = 1050
-    # print("Download ...")
-    # download_flavor_db(n)
-    print("cluster counts ...")
-    # cluster_counts(n, OPERATING_TYPES.KEEP_CALCULATION_LIMITS)
-    print("Start aroma calculation ...")
-    calculate_aroma_profile_flavor_db(n)
-    print("create matrix ...")
-    create_matrix(n)
+    DOWNLOAD = ot.OFF
+    CLUSTER_COUNTS = ot.OFF
+    AROMA_CALCULATION = ot.OFF
+    CORRELATION_MATRIX = ot.OFF
+
+    CLUSTER_MATRIX = ot.ON
+    n =1
+
+    #      ----------- NOTE -------------
+    # running whole process require change  read/write_file to 'results' dir
+    #  in all function
+    if DOWNLOAD:
+        print("Download ...")
+        download_flavor_db(n)
+    if CLUSTER_COUNTS:
+        print("cluster counts ...")
+        cluster_counts(n, ot.KEEP_CALCULATION_LIMITS)
+    if AROMA_CALCULATION:
+        print("Start aroma calculation ...")
+        calculate_aroma_profile_flavor_db(n)
+    if CLUSTER_MATRIX:
+        print("generate cluster matrix ...")
+        # create_cluster_matrix('statistical_aroma')
+        # create_cluster_matrix('culinary_1_aroma')
+        # create_cluster_matrix('culinary_2_aroma')
+    if CORRELATION_MATRIX:
+        print("generate correlation matrix ...")
+        generate_correlation_matrix()
+
     print("*************** %s minuets ***********" % str((time.time() - start_time) / 60))
 
 
