@@ -37,8 +37,10 @@ def process_keywords(str):
     return keys_arr
 
 
+""" note: make sure your csv not include merge cell for titles """
+
 def read_chef():
-    chef_csv = open("assets/original_data/Copy of DG-DB-noam - Sheet8 - Copy of DG-DB-noam - Sheet8 (1).csv", "r")
+    chef_csv = open("assets/original_data/chef-map-v2.csv", "r")
     chef_table = [l_ing for l_ing in [line.split(",") for line in chef_csv]]
     # print(chef_table)
 
@@ -75,7 +77,7 @@ def read_chef():
                 elif col == '\n' or col == '':
                     break
                 else:
-                    # print(line[i], end=' ')
+                    print(line[i], end=' ')
                     keywords.append(col)
                     opposite_chef_table_level_1[col] = title
                     opposite_chef_table_level_2[col] = subtitle
@@ -83,9 +85,9 @@ def read_chef():
             cluster['sub_cluster'].append(sub_cluster)
 
     #  Do once -
-    # write_json("opposite_culinary_table_level_1.json", opposite_chef_table_level_1)
-    # write_json("opposite_culinary_table_level_2.json", opposite_chef_table_level_2)
-    # write_json("level_2_to_level_1.json", level_2_to_level_1)
+    write_json("assets/opposite_culinary_table_level_1.json", opposite_chef_table_level_1)
+    write_json("assets/opposite_culinary_table_level_2.json", opposite_chef_table_level_2)
+    write_json("assets/level_2_to_level_1.json", level_2_to_level_1)
 
     write_json("assets/original_data/chef_table.json", chef_table_dict)
 
@@ -104,7 +106,8 @@ def id_to_mol():
     ingredient_to_mol = {}
     for ing in downloads['ingredients']:
         mol_ing = list({item['pubchem_id']  for item in ing["molecules"]})
-        ingredient_to_mol[ing['entity_id']] = mol_ing
+        key = str((ing['entity_id'], ing['entity_alias_readable'])) # id + name
+        ingredient_to_mol[key] = mol_ing
         # pprint(ingredient_to_mol)
     # pprint(ingredient_to_mol)
     write_json('assets/ingredient_to_mol.json', ingredient_to_mol)
