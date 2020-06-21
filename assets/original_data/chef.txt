@@ -1,0 +1,13 @@
+Veg				Savory	Sour	Marine	Terpene					Maillard						Pungent	Phenol	Fruity						Floral	Dairy	Sulphur
+Herbaceous	Green	Fruit like	Earthy	Savory	Sour	Marine	Wood	Spice	Smoke	Petrol	Medicinal	Toasted	Roasted	 Nutty	Meaty	Chocolate	Caramel	Pungent	Phenol	Tropical	 Tree fruit	Melon	 Dried fruit	 Citrus	 Berry	Floral	Dairy	Sulphur
+herbaceous	green	fruity	earthy	savory	sour	marine	wood	spice	smoke	petrol	medicinal	toasted	roasted	nutty 	meaty	chocolate	caramel	pungent	phenol	tropical	fruit	melon	dried fruit	citrus	berry	floral	dairy	sulphur
+herbal	vegetable	vegetable	vegetable		vinegar	fishy	woody	spicy	smoky	gasoline	minty	burnt	burnt	almond	animal	cocoa	sweet	spicy	phenolic	fruity	fruity	fruity	fruity	fruity	fruity	rose	milky	sulfurous
+vegetable	leaf		mushroom				pine	clove			chemical	baked	roast	nut	meat					pineapple	apple	fruit	fruit	orange	fruit	flower	milk	onion
+herb	cucumber		potato								medical			hazelnut	bacon					fruit	pear	grape		lemon	strawberry	jasmin	buttermilk	garlic
+leaf	leafy		earth								medicine			peanut	beef					coconut	peach	watermelon		grapefruit	raspberry	violet	cheesy	sulfury
+leafy	grassy		rooty											walnut	chicken					banana	cherry			lime	hawthorn	geranium		sulfur
+grassy	celery														beefy					mango	apricot			mandarin	blue berry	hyacinth		alliaceous
+																					plum			orange peel		lavender
+																										jasmine
+																										red rose
+																										petal

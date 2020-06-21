@@ -1,0 +1,46 @@
+{
+  "Uncategorised": {
+    "max": 1122,
+    "min": 1
+  },
+  "Decayed": {
+    "max": 31,
+    "min": 1
+  },
+  "Sweet": {
+    "max": 201,
+    "min": 1
+  },
+  "Woody": {
+    "max": 277,
+    "min": 1
+  },
+  "Medicinal": {
+    "max": 52,
+    "min": 1
+  },
+  "Sulfidic": {
+    "max": 71,
+    "min": 1
+  },
+  "Fruity": {
+    "max": 289,
+    "min": 1
+  },
+  "Smoky": {
+    "max": 138,
+    "min": 1
+  },
+  "Floral": {
+    "max": 107,
+    "min": 1
+  },
+  "Citrus": {
+    "max": 69,
+    "min": 1
+  },
+  "Mint": {
+    "max": 84,
+    "min": 1
+  }
+}
